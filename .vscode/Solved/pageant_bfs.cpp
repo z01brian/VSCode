@@ -31,6 +31,46 @@ void bfs(vector<string>& graph, vector<vector<int>>& marked, vector<pair<int, in
 }
 
 
+int minBFS(vector<string>&graph, vector<pair<int, int>>& spots1, vector<pair<int, int>>& spots2) {
+    int minDistance = INT_MAX;
+    for (int i = 0; i<spots1.size(); i++) {
+        vector<vector<int>> distance(N, vector<int>(M, -1));
+        queue<pair<int, int>> q;
+
+        q.push(spots1[i]);
+        distance[spots1[i].first][spots1[i].second] = 0;
+        int currMin = INT_MAX;
+
+
+        while (!q.empty()) {
+            pair<int, int> p = q.front();
+            int row = p.first;
+            int col = p.second;
+            q.pop();
+
+            for (int i = 0; i<4; i++) {
+                int newRow = row + xDir[i];
+                int newCol = col + yDir[i];
+                if (newRow >= 0 && newRow < N && newCol >= 0 && newCol < M) {
+                    if (distance[newRow][newCol] == -1) {
+                        q.push(make_pair(newRow, newCol));
+                        distance[newRow][newCol] = distance[row][col] + 1;
+                        if (find(spots2.begin(), spots2.end(), make_pair(newRow, newCol)) != spots2.end()) {
+                            currMin = distance[newRow][newCol] - 1;
+                            break;
+                        }
+                    }
+                }
+            }
+            if (currMin != INT_MAX) break;
+        }
+        minDistance = min(minDistance, currMin);
+    }
+
+    return minDistance;
+}
+
+
 int main() {
     cin >> N >> M;
     vector<string> cow(N);
@@ -68,13 +108,5 @@ int main() {
         if (started) break;
     }
 
-    int minDistance = INT_MAX;
-    for (pair<int, int> i : spots1) {
-        for (pair<int, int> j : spots2) {
-            int distance = abs(i.first - j.first) + abs(i.second - j.second) - 1;
-            minDistance = min(minDistance, distance);
-        }
-    }
-
-    cout << minDistance;
+    cout << minBFS(cow, spots1, spots2);
 }

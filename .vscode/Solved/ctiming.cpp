@@ -6,7 +6,7 @@ int main() {
     cin >> D >> H >> M;
     int mins = 0;
 
-    mins += M - 1;
+    mins += M - 11;
     mins += 60*(H-11);
     mins += 24*60*(D-11);
 
